@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 567dffd5ed4658f4091868fd8deeb6d0
+timeCreated: 1551754667
+licenseType: Store
+DefaultImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81759
+  packageName: MS Advanced Camera Controller
+  packageVersion: 2.9.8
+  assetPath: Assets/Marcos Schultz/MSAdvancedCameraController/Example/ExampleMobile.unity
+  uploadId: 381139

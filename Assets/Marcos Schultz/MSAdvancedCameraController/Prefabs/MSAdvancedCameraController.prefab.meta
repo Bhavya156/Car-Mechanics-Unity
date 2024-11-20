@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 8c87cdf4f29eace459f47bdc882acff4
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 81759
+  packageName: MS Advanced Camera Controller
+  packageVersion: 2.9.8
+  assetPath: Assets/Marcos Schultz/MSAdvancedCameraController/Prefabs/MSAdvancedCameraController.prefab
+  uploadId: 381139
