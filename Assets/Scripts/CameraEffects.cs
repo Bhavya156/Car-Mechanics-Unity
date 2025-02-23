@@ -1,13 +1,16 @@
 using System;
 using UnityEngine;
-using static UnityEditor.SceneView;
 
 public class CameraEffects : MonoBehaviour
 {
-    public Controller controller;
+    private CarEffects controller;
     public float desiredFOV;
     public float defaultFOV;
     [Range(0, 5)] public float smoothTime;
+
+    private void Start() {
+        controller = GameObject.FindGameObjectWithTag("Player").GetComponent<CarEffects>();
+    }
 
     // Update is called once per frame
     private void FixedUpdate()

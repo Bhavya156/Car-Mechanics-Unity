@@ -1,5 +1,4 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -30,12 +29,11 @@ public class Controller : MonoBehaviour
     private GameObject colliders, meshes;
 
     [Header("Acceleration")]
-    public int motorTorque;
-    public float brakeTorque;
-    public float nitrousPower;
+    public float topSpeed;
+    private float brakeTorque;
     public AnimationCurve engineCurve;
-    public float wheelRpm;
-    public float totalPower;
+    private float wheelRpm;
+    private float totalPower;
     public float engineRPM;
     public float[] gears;
     public int gearNum = 0;
@@ -43,13 +41,10 @@ public class Controller : MonoBehaviour
     public bool reverse;
 
     [Header("Steering")]
-    public float steerAngle;
     public float radius;
 
     [Header("Drift")]
     private WheelFrictionCurve forwardFriction, sidewaysFriction;
-    public float handBrakeFriction;
-    public float handBrakeFrictionMultiplier = 2f;
     public float smoothTime;
 
     [Header("Speedometer")]
@@ -58,9 +53,7 @@ public class Controller : MonoBehaviour
     public float[] slip = new float[4];
 
     [Header("Effects")]
-    public ParticleSystem[] nitroSmoke;
-    public float nitrousValue;
-    public bool nitrousFlag;
+    
 
     private Rigidbody carRb;
 
@@ -83,7 +76,6 @@ public class Controller : MonoBehaviour
         Steering();
         AddDownForce();
         DriftCar();
-        ActivateNitrous();
         //GetFriction();
     }
 
@@ -115,13 +107,13 @@ public class Controller : MonoBehaviour
             }
         }
 
-        KPH = carRb.linearVelocity.magnitude * 3.6f;  // To calculate speed in km/h
+        KPH = carRb.linearVelocity.magnitude * 3.6f;
+        KPH = Mathf.Clamp(KPH, 0f, topSpeed);
 
-        ////Nitrous
-        //if (inputManager.nitrous)
-        //{
-        //    carRb.AddForce(transform.forward * 5000);
-        //}
+        if (KPH >= topSpeed)
+        {
+            carRb.linearVelocity = Vector3.ClampMagnitude(carRb.linearVelocity, topSpeed / 3.6f);
+        }
     }
 
     private void CalculateEnginePower()
@@ -248,10 +240,18 @@ public class Controller : MonoBehaviour
 
     private void GetObjects()
     {
+        // if (gameManager != null)
+        // {
+        //     gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        // }
+        // else
+        // {
+        //     Debug.Log("Game Manager Not found");
+        // }
         inputManager = GetComponent<InputManager>();
         carRb = GetComponent<Rigidbody>();
-        colliders = GameObject.Find("Colliders");
-        meshes = GameObject.Find("Meshes");
+        colliders = gameObject.transform.Find("Wheels").gameObject.transform.Find("Colliders").gameObject;
+        meshes = gameObject.transform.Find("Wheels").gameObject.transform.Find("Meshes").gameObject;
 
         wheelColliders[0] = colliders.transform.Find("FrontLeftWheelCollider").gameObject.GetComponent<WheelCollider>();
         wheelColliders[1] = colliders.transform.Find("FrontRightWheelCollider").gameObject.GetComponent<WheelCollider>();
@@ -312,7 +312,7 @@ public class Controller : MonoBehaviour
         }
     }
     public bool IsGrounded;
-    [HideInInspector] public bool playSmokeParticles;
+    public bool playSmokeParticles;
 
     private IEnumerator TimedLoop()
     {
@@ -323,53 +323,5 @@ public class Controller : MonoBehaviour
         }
     }
 
-    public void ActivateNitrous()
-    {
-        if (!inputManager.nitrous && nitrousValue <= 10)
-        {
-            nitrousValue += Time.deltaTime / 3;
-        }
-        else
-        {
-            nitrousValue -= (nitrousValue <= 0) ? 0 : Time.deltaTime * 2;
-        }
-
-        if (inputManager.nitrous)
-        {
-            if (nitrousValue > 0)
-            {
-                StartNitrousEmitter();
-            }
-            else
-            {
-                StopNitrousEmitter();
-            }
-        }
-        else
-        {
-            StopNitrousEmitter();
-        }
-    }
-
-    public void StartNitrousEmitter()
-    {
-        carRb.AddForce(transform.forward * 5000);
-        if (nitrousFlag) return;
-        for (int i = 0; i < nitroSmoke.Length; i++)
-        {
-            nitroSmoke[i].Play();
-        }
-        nitrousFlag = true;
-        
-    }
-
-    public void StopNitrousEmitter()
-    {
-        if (!nitrousFlag) return;
-        for (int i = 0; i < nitroSmoke.Length; i++)
-        {
-            nitroSmoke[i].Stop();
-        }
-        nitrousFlag = false;
-    }
+    
 }

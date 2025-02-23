@@ -8,18 +8,27 @@ public class CarEffects : MonoBehaviour
     private bool tireMarksFlag;
     public ParticleSystem[] smokeParticles;
     public TrailRenderer[] tireTrails;
-    public AudioSource skidClip;
+    private AudioSource skidClip;
+    private Rigidbody carRb;
+
+    public ParticleSystem[] nitroSmoke;
+    public float nitrousValue;
+    public bool nitrousFlag;
+    public float nitrousPower = 5000;
 
     private void Start()
     {
         carController = GetComponent<Controller>();
         inputManager = GetComponent<InputManager>();
+        skidClip = GetComponent<AudioSource>();
+        carRb = GetComponent<Rigidbody>();
     }
 
     private void FixedUpdate()
     {
         ActivateSmoke();
         CheckDrift();
+        ActivateNitrous();
     }
 
     private void ActivateSmoke()
@@ -91,5 +100,60 @@ public class CarEffects : MonoBehaviour
         }
         skidClip.Stop();
         tireMarksFlag = false;
+    }
+
+    public void ActivateNitrous()
+    {
+        if (!inputManager.nitrous && nitrousValue <= 10)
+        {
+            nitrousValue += Time.deltaTime / 3;
+        }
+        else
+        {
+            nitrousValue -= (nitrousValue <= 0) ? 0 : Time.deltaTime * 2;
+        }
+
+        if (inputManager.nitrous)
+        {
+            if (nitrousValue > 0)
+            {
+                StartNitrousEmitter();
+                if (carController.KPH < carController.topSpeed)
+                {
+                    carRb.AddForce(transform.forward * nitrousPower);
+                }
+            }
+            else
+            {
+                StopNitrousEmitter();
+            }
+        }
+        else
+        {
+            StopNitrousEmitter();
+        }
+    }
+
+
+    public void StartNitrousEmitter()
+    {
+        carRb.AddForce(transform.forward * nitrousPower);
+        if (nitrousFlag) return;
+        for (int i = 0; i < nitroSmoke.Length; i++)
+        {
+            nitroSmoke[i].Play();
+        }
+        nitrousFlag = true;
+
+    }
+
+    public void StopNitrousEmitter()
+    {
+        if (!nitrousFlag) return;
+        for (int i = 0; i < nitroSmoke.Length; i++)
+        {
+            nitroSmoke[i].Stop();
+        }
+        nitrousFlag = false;
     }
 }

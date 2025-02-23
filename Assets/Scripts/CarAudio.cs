@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityStandardAssets.Vehicles.Car;
 
 public class CarAudio : MonoBehaviour
@@ -44,8 +45,13 @@ public class CarAudio : MonoBehaviour
     private AudioSource m_HighDecel; // Source for the high deceleration sounds
     private bool m_StartedSound; // flag for knowing if we have started sounds
 
-    public Controller m_CarController; // Reference to car we are controlling
-    public InputManager inputManager;
+    private Controller m_CarController; // Reference to car we are controlling
+    private InputManager inputManager;
+
+    private void Start() {
+        m_CarController = GetComponent<Controller>();
+        inputManager = GetComponent<InputManager>();
+    }
 
 
     private void StartSound()
@@ -84,6 +90,7 @@ public class CarAudio : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
+        if (SceneManager.GetActiveScene().name == "AwakeScene") return;
         // get the distance to main camera
         float camDist = (Camera.main.transform.position - transform.position).sqrMagnitude;
 
@@ -142,10 +149,10 @@ public class CarAudio : MonoBehaviour
                 decFade = 1 - ((1 - decFade) * (1 - decFade));
 
                 // adjust the source volumes based on the fade values
-                m_LowAccel.volume = lowFade * accFade - 0.3f;
-                m_LowDecel.volume = lowFade * decFade - 0.3f;
-                m_HighAccel.volume = highFade * accFade - 0.3f;
-                m_HighDecel.volume = highFade * decFade - 0.3f;
+                m_LowAccel.volume = lowFade * accFade - 0.7f;
+                m_LowDecel.volume = lowFade * decFade - 0.7f;
+                m_HighAccel.volume = highFade * accFade - 0.7f;
+                m_HighDecel.volume = highFade * decFade - 0.7f;
 
                 // adjust the doppler levels
                 m_HighAccel.dopplerLevel = useDoppler ? dopplerLevel : 0;
