@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Scenes/HomeScreen.unity
     guid: e4e87a66ddccafd4d8afb5cadf246579
   - enabled: 1
+    path: Assets/Scenes/New/Garage.unity
+    guid: 7f6c1bc6e7a5e594e806927341597ff9
+  - enabled: 1
     path: Assets/Scenes/AwakeScene.unity
     guid: 6d5bc925419ce5248920c2cd9ab60be1
   - enabled: 1

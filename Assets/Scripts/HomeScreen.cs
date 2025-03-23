@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 public class HomeScreen : MonoBehaviour
 {
     public void PlayButton() {
-        SceneManager.LoadScene("AwakeScene");
+        SceneManager.LoadScene("Garage");
     }
 
     public void QuitButton() {
